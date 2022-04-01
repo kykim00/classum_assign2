@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { gameSelector } from "../stores/gameSetting";
@@ -6,33 +6,49 @@ import { gameSelector } from "../stores/gameSetting";
 export const GameStart = () => {
   const { width, height, mines } = useSelector(gameSelector);
   const [isGameStart, setIsGameStart] = useState(false);
-  const onClickFirstCell = () => {
-    generateMines(width, height, mines);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isGameClear, setIsGameClear] = useState(false);
+
+  const [minesMap, setMinesMap] = useState<number[][]>([]);
+  let mineMapTemp: number[][] = [];
+  const onClickFirstCell = (clickedIndexX: number, clickedIndexY: number) => {
+    console.log(clickedIndexX, clickedIndexY);
+    while (1) {
+      mineMapTemp = generateMines(width, height, mines);
+      if (mineMapTemp[clickedIndexX][clickedIndexY] === 0) {
+        break;
+      }
+    }
+    setMinesMap(mineMapTemp);
     setIsGameStart(true);
   };
   const onClickCell = () => {
     console.log("onClickCell");
   };
   const onClick = (e: any) => {
-    console.log(e.target.value.split("-"));
+    const indexX = e.target.value.split("-")[0];
+    const indexY = e.target.value.split("-")[1];
     if (!isGameStart) {
-      onClickFirstCell();
+      onClickFirstCell(+indexX, +indexY);
     } else {
       onClickCell();
     }
   };
   const generateMines = (width: number, height: number, mines: number) => {
-    const mineMap = new Array(width * height).fill(0);
-    const mineIndex: number[] = [];
-    while (mineIndex.length < mines) {
-      const index = Math.floor(Math.random() * (width * height));
-      if (!mineIndex.includes(index)) {
-        mineIndex.push(index);
+    let mineMap = new Array(height);
+    for (let i = 0; i < width; i++) {
+      mineMap[i] = new Array(width).fill(0);
+    }
+    let mineCount = 0;
+    while (mineCount < mines) {
+      const x = Math.floor(Math.random() * width);
+      const y = Math.floor(Math.random() * height);
+      if (mineMap[x][y] === 0) {
+        mineCount++;
+        mineMap[x][y] = 1;
       }
     }
-    mineIndex.forEach((index) => {
-      mineMap[index] = -1;
-    });
+
     console.log(mineMap);
     return mineMap;
   };
