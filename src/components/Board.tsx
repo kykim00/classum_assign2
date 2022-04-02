@@ -1,30 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearGame, gameOver, gameSelector } from "../stores/gameSetting";
+import { allBoardChecked } from "../utils/allBoardChecked";
+import { findMine } from "../utils/findMine";
+import { isGameClear } from "../utils/isGameClear";
 import { Cell } from "./Cell";
 import { Modal } from "./common/Modal";
 
 export const Board = () => {
-  const { width, height, board, minesMap } = useSelector(gameSelector);
+  const { width, height, board, minesMap, gameState } =
+    useSelector(gameSelector);
   const [isModal, setIsModal] = useState(false);
   const dispatch = useDispatch();
-
-  const isGameClear = () => {
-    if (board.length === 0) return;
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
-        if (board[i][j] === "?") {
-          if (!(minesMap[i][j] === 1)) {
-            dispatch(gameOver());
-            return false;
-          }
-        }
-      }
-    }
-    console.log("running");
-    dispatch(clearGame());
-    return true;
-  };
 
   const renderBoard = () => {
     const board = [];
@@ -38,14 +25,24 @@ export const Board = () => {
     return board;
   };
 
+  const onCloseModal = () => {
+    setIsModal(false);
+  };
+
   useEffect(() => {
     if (board.length === 0) return;
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
-        if (board[i][j] === "") return;
-      }
+    if (findMine(board)) {
+      setIsModal(true);
+      return;
     }
-    if (isGameClear()) setIsModal(true);
+    if (allBoardChecked(board)) {
+      if (isGameClear(board, minesMap)) {
+        dispatch(clearGame());
+      } else {
+        dispatch(gameOver());
+      }
+      setIsModal(true);
+    }
   }, [board]);
 
   return (
@@ -53,8 +50,8 @@ export const Board = () => {
       <div>{renderBoard()}</div>
       {isModal && (
         <Modal>
-          <h1>CLEAR !!</h1>
-          <button onClick={() => setIsModal(false)}>닫기</button>
+          <h1>{gameState === "clear" ? "CLEAR !! " : "LOSE :( "}</h1>
+          <button onClick={onCloseModal}>닫기</button>
         </Modal>
       )}
     </div>
