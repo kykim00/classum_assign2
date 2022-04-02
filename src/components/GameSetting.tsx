@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 import {
   customGame,
   gameSelector,
@@ -8,6 +7,7 @@ import {
   setBoard,
   setGame,
 } from "../stores/gameSetting";
+import { Modal } from "./common/Modal";
 
 export const GameSetting = () => {
   const [isModal, setIsModal] = useState(false);
@@ -90,34 +90,3 @@ export const GameSetting = () => {
     </div>
   );
 };
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  input {
-    width: 150px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #ccc;
-    color: #fff;
-    cursor: pointer;
-  }
-`;
