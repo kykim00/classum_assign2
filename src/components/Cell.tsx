@@ -56,7 +56,7 @@ export const Cell = ({ xPos, yPos }: CellProps) => {
 
   const onContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (flags > mines) {
+    if (flags >= mines) {
       alert("사용 가능 깃발의 수를 초과했습니다.");
       return;
     }
