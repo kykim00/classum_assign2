@@ -6,6 +6,8 @@ import {
   gameSelector,
   setBoard,
   setBoardCell,
+  addFlags,
+  removeFlags,
   setMinesMap,
   startGame,
 } from "../stores/gameSetting";
@@ -17,10 +19,11 @@ interface CellProps {
   yPos: number;
 }
 export const Cell = ({ xPos, yPos }: CellProps) => {
-  const { width, height, mines, gameState, minesMap, board } =
+  const { width, height, mines, gameState, minesMap, flags, board } =
     useSelector(gameSelector);
   const dispatch = useDispatch();
   const [value, setValue] = useState<string | number>("");
+
   const onClick = () => {
     if (gameState === "playing") {
       if (minesMap[xPos][yPos] === 1) {
@@ -34,6 +37,7 @@ export const Cell = ({ xPos, yPos }: CellProps) => {
             value: countMines(xPos, yPos, minesMap, width, height),
           })
         );
+        if (board[xPos][yPos] === "?") dispatch(removeFlags());
       }
     } else if (gameState === "ready") {
       let temp = generateMines(width, height, mines, xPos, yPos);
@@ -49,16 +53,24 @@ export const Cell = ({ xPos, yPos }: CellProps) => {
       dispatch(startGame());
     }
   };
+
   const onContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (flags > mines) {
+      alert("사용 가능 깃발의 수를 초과했습니다.");
+      return;
+    }
     if (gameState === "playing") {
       dispatch(setBoardCell({ xPos, yPos, value: "?" }));
     }
+    dispatch(addFlags());
   };
+
   useEffect(() => {
     if (board.length === 0) return;
     setValue(board[xPos][yPos]);
   }, [board]);
+
   return (
     <CellBox onClick={onClick} onContextMenu={onContextMenu}>
       {value}
