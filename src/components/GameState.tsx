@@ -42,6 +42,7 @@ export const GameState = () => {
   useEffect(() => {
     setLeftMines(mines - flags);
   }, [flags]);
+
   return (
     <div>
       <span>남은 지뢰 : {leftMines} </span>

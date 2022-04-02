@@ -20,7 +20,7 @@ const ModalContainer = styled.div`
   z-index: 10;
   label {
     display: block;
-    margin-bottom: 10px;
+    margin: 0 0 10px 10px;
   }
   input {
     width: 150px;
@@ -29,6 +29,7 @@ const ModalContainer = styled.div`
     border-radius: 4px;
   }
   button {
+    margin-left: 10px;
     padding: 10px;
     border: none;
     border-radius: 4px;
