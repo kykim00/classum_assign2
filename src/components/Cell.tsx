@@ -1,7 +1,14 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { gameSelector, setMinesMap, startGame } from "../stores/gameSetting";
+import {
+  gameOver,
+  gameSelector,
+  setBoard,
+  setBoardCell,
+  setMinesMap,
+  startGame,
+} from "../stores/gameSetting";
 import { countMines } from "../utils/countMines";
 import { generateMines } from "../utils/generateMines";
 
@@ -10,36 +17,51 @@ interface CellProps {
   yPos: number;
 }
 export const Cell = ({ xPos, yPos }: CellProps) => {
-  const [count, setCount] = useState("");
-  const { width, height, mines, gameState, minesMap } =
+  const { width, height, mines, gameState, minesMap, board } =
     useSelector(gameSelector);
   const dispatch = useDispatch();
+  const [value, setValue] = useState<string | number>("");
   const onClick = () => {
     if (gameState === "playing") {
       if (minesMap[xPos][yPos] === 1) {
-        setCount("*");
-        setTimeout(() => {
-          setCount("");
-        }, 1000);
+        dispatch(setBoardCell({ xPos, yPos, value: "*" }));
+        dispatch(gameOver());
       } else {
-        setCount(countMines(xPos, yPos, minesMap, width, height));
+        dispatch(
+          setBoardCell({
+            xPos,
+            yPos,
+            value: countMines(xPos, yPos, minesMap, width, height),
+          })
+        );
       }
     } else if (gameState === "ready") {
       let temp = generateMines(width, height, mines, xPos, yPos);
-      setCount(countMines(xPos, yPos, temp, width, height));
       dispatch(setMinesMap({ minesMap: temp }));
+      dispatch(setBoard());
+      dispatch(
+        setBoardCell({
+          xPos,
+          yPos,
+          value: countMines(xPos, yPos, temp, width, height),
+        })
+      );
       dispatch(startGame());
     }
   };
-  const onContextMenu = (e: any) => {
+  const onContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (gameState === "playing") {
-      setCount("?");
+      dispatch(setBoardCell({ xPos, yPos, value: "?" }));
     }
   };
+  useEffect(() => {
+    if (board.length === 0) return;
+    setValue(board[xPos][yPos]);
+  }, [board]);
   return (
     <CellBox onClick={onClick} onContextMenu={onContextMenu}>
-      {count}
+      {value}
     </CellBox>
   );
 };
@@ -48,5 +70,6 @@ const CellBox = styled.button`
   display: inline-block;
   width: 16px;
   height: 16px;
+  margin: 0 2px;
   border: 1px solid black;
 `;
