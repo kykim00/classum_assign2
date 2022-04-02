@@ -6,6 +6,9 @@ export interface GameSetting {
   width: number;
   height: number;
   mines: number;
+  gameState: string;
+  minesMap: number[][];
+  board: number[][] | string[][];
 }
 
 const initialState: GameSetting = {
@@ -13,6 +16,9 @@ const initialState: GameSetting = {
   width: 8,
   height: 8,
   mines: 10,
+  gameState: "ready",
+  minesMap: [],
+  board: [],
 };
 
 const gameSetting = createSlice({
@@ -35,16 +41,55 @@ const gameSetting = createSlice({
         state.height = 16;
         state.mines = 99;
       }
+      state.minesMap = [];
     },
     customGame: (state, action) => {
       state.difficulty = action.payload.difficulty;
       state.width = action.payload.width;
       state.height = action.payload.height;
       state.mines = action.payload.mines;
+      state.minesMap = [];
+    },
+    resetGame: (state) => {
+      state.gameState = "ready";
+    },
+    gameOver: (state) => {
+      state.gameState = "over";
+    },
+    clearGame: (state) => {
+      state.gameState = "clear";
+    },
+    startGame: (state) => {
+      state.gameState = "playing";
+    },
+    setMinesMap: (state, action) => {
+      const { minesMap } = action.payload;
+      state.minesMap = minesMap;
+    },
+    setBoard: (state) => {
+      for (let i = 0; i < state.width; i++) {
+        state.board[i] = [];
+        for (let j = 0; j < state.height; j++) {
+          state.board[i][j] = "";
+        }
+      }
+    },
+    setBoardCell: (state, action) => {
+      const { xPos, yPos, value } = action.payload;
+      state.board[xPos][yPos] = value;
     },
   },
 });
 
-export const { setGame, customGame } = gameSetting.actions;
+export const {
+  setGame,
+  customGame,
+  setMinesMap,
+  resetGame,
+  startGame,
+  gameOver,
+  setBoard,
+  setBoardCell,
+} = gameSetting.actions;
 export const gameSelector = (state: rootState) => state.gameSetting;
 export default gameSetting;
