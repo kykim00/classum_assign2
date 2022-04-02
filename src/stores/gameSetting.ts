@@ -43,6 +43,7 @@ const gameSetting = createSlice({
         state.height = 16;
         state.mines = 99;
       }
+      state.board = [];
       state.minesMap = [];
       state.flags = 0;
     },
@@ -51,7 +52,9 @@ const gameSetting = createSlice({
       state.width = action.payload.width;
       state.height = action.payload.height;
       state.mines = action.payload.mines;
+      state.board = [];
       state.minesMap = [];
+      state.flags = 0;
     },
     resetGame: (state) => {
       state.gameState = "ready";
@@ -76,6 +79,7 @@ const gameSetting = createSlice({
           state.board[i][j] = "";
         }
       }
+      state.flags = 0;
     },
     setBoardCell: (state, action) => {
       const { xPos, yPos, value } = action.payload;
