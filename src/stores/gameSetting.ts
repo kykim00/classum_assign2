@@ -6,6 +6,7 @@ export interface GameSetting {
   width: number;
   height: number;
   mines: number;
+  flags: number;
   gameState: string;
   minesMap: number[][];
   board: number[][] | string[][];
@@ -16,6 +17,7 @@ const initialState: GameSetting = {
   width: 8,
   height: 8,
   mines: 10,
+  flags: 0,
   gameState: "ready",
   minesMap: [],
   board: [],
@@ -42,6 +44,7 @@ const gameSetting = createSlice({
         state.mines = 99;
       }
       state.minesMap = [];
+      state.flags = 0;
     },
     customGame: (state, action) => {
       state.difficulty = action.payload.difficulty;
@@ -78,6 +81,12 @@ const gameSetting = createSlice({
       const { xPos, yPos, value } = action.payload;
       state.board[xPos][yPos] = value;
     },
+    addFlags: (state) => {
+      state.flags = state.flags + 1;
+    },
+    removeFlags: (state) => {
+      state.flags = state.flags - 1;
+    },
   },
 });
 
@@ -88,8 +97,11 @@ export const {
   resetGame,
   startGame,
   gameOver,
+  clearGame,
   setBoard,
   setBoardCell,
+  addFlags,
+  removeFlags,
 } = gameSetting.actions;
 export const gameSelector = (state: rootState) => state.gameSetting;
 export default gameSetting;
