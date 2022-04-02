@@ -5,7 +5,6 @@ export const countMines = (
   width: number,
   height: number
 ) => {
-  console.log(minesMap);
   if (minesMap[clickedIndexX][clickedIndexY] === 1) {
     return "*";
   }
