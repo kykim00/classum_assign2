@@ -1,16 +1,14 @@
 import React from "react";
-import { GameSetting } from "./components/GameSetting";
 import { Provider } from "react-redux";
 import store from "./stores";
-import { GameStart } from "./components/GameStart";
+import { Main } from "./pages/Main";
 function App() {
   return (
-    <>
+    <div>
       <Provider store={store}>
-        <GameSetting />
-        <GameStart />
+        <Main />
       </Provider>
-    </>
+    </div>
   );
 }
 

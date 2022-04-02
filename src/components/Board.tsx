@@ -17,5 +17,5 @@ export const Board = () => {
     return board;
   };
 
-  return <>{renderBoard()}</>;
+  return <div>{renderBoard()}</div>;
 };
