@@ -8,7 +8,7 @@ import {
 } from "../stores/gameSetting";
 
 export const GameState = () => {
-  const { mines, gameState, board } = useSelector(gameSelector);
+  const { mines, gameState, flags } = useSelector(gameSelector);
   const [leftMines, setLeftMines] = useState(mines);
   const [time, setTime] = useState(0);
   const dispatch = useDispatch();
@@ -39,6 +39,9 @@ export const GameState = () => {
     setTime(0);
   }, [mines]);
 
+  useEffect(() => {
+    setLeftMines(mines - flags);
+  }, [flags]);
   return (
     <div>
       <span>남은 지뢰 : {leftMines} </span>
